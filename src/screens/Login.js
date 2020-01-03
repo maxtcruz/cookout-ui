@@ -6,8 +6,8 @@ import {
     TextInput,
     Button
 } from 'react-native';
-import axios from "axios";
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import axios from "axios";
 
 class Login extends React.Component {
     constructor(props) {
@@ -37,12 +37,16 @@ class Login extends React.Component {
                 }
             });
             if (response.data.token) {
-                this.props.navigation.navigate("Home");
+                this.props.navigation.navigate("Home", {token: response.data.token});
             }
         } catch (err) {
             console.error(err);
         }
         this.setState({loginButtonDisabled: false});
+    }
+
+    onSignUp = () => {
+        this.props.navigation.navigate("SignUp");
     }
 
     render() {
@@ -69,6 +73,9 @@ class Login extends React.Component {
                     title="login"
                     disabled={this.state.loginButtonDisabled}
                     onPress={this.onLogin} />
+                <Button 
+                    title="sign up"
+                    onPress={this.onSignUp} />
             </View>
         );
     }
