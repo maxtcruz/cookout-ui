@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import axios from "axios";
+import AsyncStorage from '@react-native-community/async-storage';
 
 class Login extends React.Component {
     constructor(props) {
@@ -17,6 +18,17 @@ class Login extends React.Component {
             password: "",
             loginButtonDisabled: false
         };
+    }
+
+    async componentDidMount() {
+        try {
+            const token = await AsyncStorage.getItem("authToken");
+            if (token !== null) {
+                this.goToHome(token);
+            }
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     onChangeTextUsername = (username) => {
@@ -37,7 +49,8 @@ class Login extends React.Component {
                 }
             });
             if (response.data.token) {
-                this.props.navigation.navigate("Home", {token: response.data.token});
+                await AsyncStorage.setItem("authToken", response.data.token);
+                this.goToHome(response.data.token);
             }
         } catch (err) {
             console.error(err);
@@ -47,6 +60,10 @@ class Login extends React.Component {
 
     onSignUp = () => {
         this.props.navigation.navigate("SignUp");
+    }
+
+    goToHome = (token) => {
+        this.props.navigation.navigate("Home", {token})
     }
 
     render() {

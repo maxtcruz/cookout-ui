@@ -2,10 +2,12 @@ import React from "react";
 import {
     View,
     Text,
+    Button,
     StyleSheet
 } from "react-native";
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import axios from "axios";
+import AsyncStorage from "@react-native-community/async-storage";
 
 class Home extends React.Component {
     constructor(props) {
@@ -38,6 +40,15 @@ class Home extends React.Component {
         }
     }
 
+    onLogOut = async () => {
+        try {
+            await AsyncStorage.removeItem("authToken");
+            this.props.navigation.navigate("Login");
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
     render() {
         return (
             <View style={styles.sectionContainer}>
@@ -46,6 +57,9 @@ class Home extends React.Component {
                 <Text style={styles.sectionDescription}>{`first name: ${this.state.firstName}`}</Text>
                 <Text style={styles.sectionDescription}>{`last name: ${this.state.lastName}`}</Text>
                 <Text style={styles.sectionDescription}>{`email: ${this.state.email}`}</Text>
+                <Button 
+                    title="logout"
+                    onPress={this.onLogOut} />
             </View>
         );
     }

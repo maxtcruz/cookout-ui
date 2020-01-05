@@ -1,13 +1,13 @@
 import React from "react";
 import {
     View,
-    Text,
     TextInput,
     StyleSheet,
     Button
 } from "react-native";
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import axios from "axios";
+import AsyncStorage from '@react-native-community/async-storage';
 
 class SignUp extends React.Component {
     constructor(props) {
@@ -53,11 +53,16 @@ class SignUp extends React.Component {
                 }
             });
             if (response.data.token) {
+                await AsyncStorage.setItem("authToken", response.data.token);
                 this.props.navigation.navigate("Home", {token: response.data.token});
             }
         } catch (err) {
             console.error(err);
         }
+    }
+
+    onBack = () => {
+        this.props.navigation.goBack();
     }
 
     render() {
@@ -92,6 +97,9 @@ class SignUp extends React.Component {
                 <Button 
                     title="sign up"
                     onPress={this.onSignUp} />
+                <Button 
+                    title="back"
+                    onPress={this.onBack} />
             </View>
         );
     }
